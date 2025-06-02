@@ -1,7 +1,7 @@
 # management/commands/seed_categories.py
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from ...models import PredefinedCategory, PredefinedCategoryKeyword
+from category.models import PredefinedCategory, PredefinedCategoryKeyword
 
 class Command(BaseCommand):
     help = 'Seed predefined categories and their keywords'
@@ -14,28 +14,24 @@ class Command(BaseCommand):
                     'name': 'Salary',
                     'type': 'income',
                     'description': 'Regular salary income',
-                    'icon': 'briefcase',
                     'keywords': ['salary', 'payroll', 'wages', 'pay', 'income']
                 },
                 {
                     'name': 'Freelance',
                     'type': 'income',
                     'description': 'Freelance and contract work',
-                    'icon': 'laptop',
                     'keywords': ['freelance', 'contract', 'consulting', 'gig', 'project']
                 },
                 {
                     'name': 'Investment',
                     'type': 'income',
                     'description': 'Investment returns and dividends',
-                    'icon': 'trending-up',
                     'keywords': ['dividend', 'interest', 'investment', 'returns', 'profit', 'capital gain']
                 },
                 {
                     'name': 'Business',
                     'type': 'income',
                     'description': 'Business income',
-                    'icon': 'building',
                     'keywords': ['business', 'revenue', 'sales', 'commission']
                 }
             ]
@@ -46,70 +42,60 @@ class Command(BaseCommand):
                     'name': 'Food & Dining',
                     'type': 'expense',
                     'description': 'Food, restaurants, and dining',
-                    'icon': 'utensils',
                     'keywords': ['foodpanda', 'foodie', 'restaurant', 'dining', 'meal', 'lunch', 'dinner', 'breakfast', 'cafe', 'pizza', 'burger', 'grocery', 'supermarket', 'brunch', 'buffet']
                 },
                 {
                     'name': 'Transportation',
                     'type': 'expense',
                     'description': 'Transport and travel expenses',
-                    'icon': 'car',
                     'keywords': ['uber', 'pathao', 'taxi', 'bus', 'metro', 'fuel', 'petrol', 'diesel', 'gas', 'parking', 'toll', 'auto', 'rickshaw', 'ovai']
                 },
                 {
                     'name': 'Shopping',
                     'type': 'expense',
                     'description': 'Retail shopping and purchases',
-                    'icon': 'shopping-bag',
                     'keywords': ['daraz', 'apex','bata', 'aarong' 'shopping', 'purchase', 'buy', 'retail', 'clothes', 'clothing', 'shoes', 'accessories']
                 },
                 {
                     'name': 'Entertainment',
                     'type': 'expense',
                     'description': 'Entertainment and leisure',
-                    'icon': 'film',
                     'keywords': ['netflix','chorki', 'movie', 'cinema', 'entertainment', 'game', 'music', 'streaming', 'spotify', 'youtube', 'subscription']
                 },
                 {
                     'name': 'Healthcare',
                     'type': 'expense',
                     'description': 'Medical and healthcare expenses',
-                    'icon': 'heart',
                     'keywords': ['hospital', 'doctor', 'medical', 'medicine', 'pharmacy', 'health', 'clinic', 'treatment', 'insurance']
                 },
                 {
                     'name': 'Utilities',
                     'type': 'expense',
                     'description': 'Utility bills and services',
-                    'icon': 'zap',
                     'keywords': ['electricity', 'water', 'gas', 'internet', 'phone', 'mobile', 'broadband', 'utility', 'bill']
                 },
                 {
                     'name': 'Education',
                     'type': 'expense',
                     'description': 'Education and learning expenses',
-                    'icon': 'book',
                     'keywords': ['education', 'course', 'training', 'book', 'school', 'college', 'university', 'tuition', 'fee']
                 },
                 {
                     'name': 'Travel',
                     'type': 'expense',
                     'description': 'Travel and vacation expenses',
-                    'icon': 'plane',
                     'keywords': ['travel', 'vacation', 'hotel', 'flight', 'trip', 'tour', 'booking', 'airbnb']
                 },
                 {
                     'name': 'Personal Care',
                     'type': 'expense',
                     'description': 'Personal care and grooming',
-                    'icon': 'user',
                     'keywords': ['salon', 'haircut', 'beauty', 'cosmetics', 'grooming', 'spa', 'personal care']
                 },
                 {
                     'name': 'Other',
                     'type': 'expense',
                     'description': 'Miscellaneous expenses',
-                    'icon': 'more-horizontal',
                     'keywords': ['other', 'miscellaneous', 'misc', 'general']
                 }
             ]
