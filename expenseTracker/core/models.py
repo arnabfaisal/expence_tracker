@@ -44,3 +44,11 @@ class Goal(models.Model):
     def __str__(self):
         return f"{self.user} set up a {self.target_amount} on a {self.period} basis"
 
+
+
+class Report(models.Model):
+    user  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports' )
+    report = models.CharField(max_length=200, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
