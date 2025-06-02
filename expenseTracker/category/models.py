@@ -32,6 +32,7 @@ class Category(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name='predefined_category'
     )
 
     is_active = models.BooleanField(default=True)
