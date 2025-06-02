@@ -14,6 +14,8 @@ router.register('goal', views.GoalViewSets, basename='goal')
 router.register('report', views.ReportViewSets, basename='report')
 
 urlpatterns = [
-    path("", include(router.urls))
+    path("", include(router.urls)),
+    path("register/", views.RegisterView.as_view(), name='register'),
+    path("logout/", views.LogoutView.as_view(), name='logout'),
 ]
 

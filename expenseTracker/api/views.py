@@ -4,10 +4,19 @@ from rest_framework.response import Response
 from datetime import datetime
 from django.db.models import Sum
 from rest_framework.decorators import action
+from rest_framework import status 
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from .permissions import IsOwner
+
+from drf_spectacular.utils import extend_schema
+
+
 
 # Create your views here.
 from users.models import CustomUser
-from users.serializers import CustomUserSerializer 
+from users.serializers import CustomUserSerializer , RegisterSerializer, LogoutSerializer
 
 from category.models import PredefinedCategory, Category
 from category  import  serializers
@@ -17,34 +26,79 @@ from core.serializers import UserBalanceSerializer, TransactionSerializer, GoalS
 
 
 
+class RegisterView(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
+
+
+class LogoutView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = LogoutSerializer
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 class CustomUserViewSets(viewsets.ModelViewSet):
     queryset = CustomUser.objects.prefetch_related('user_info')
     serializer_class = CustomUserSerializer
+    permission_classes = [IsAdminUser]
 
 class PredefinedCategoryViewSets(viewsets.ModelViewSet):
     queryset = PredefinedCategory.objects.all()
     serializer_class = serializers.PredefinedCategorySerializer
+    permission_classes = [IsAdminUser]
 
 class CategoryViewSets(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
+    permission_classes = [IsOwner]
 
 class UserBalanceViewSets(viewsets.ModelViewSet):
-    queryset = UserBalance.objects.all()
     serializer_class = UserBalanceSerializer
+    permission_classes = [IsOwner]
 
+    def get_queryset(self):
+        return UserBalance.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+@extend_schema(tags=["Transactions"])
 class TransactionViewSets(viewsets.ModelViewSet):
-    queryset = Transaction.objects.all()
-    serializer_class =  TransactionSerializer
+    serializer_class = TransactionSerializer
+    permission_classes = [IsOwner]
 
+    def get_queryset(self):
+        return Transaction.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class GoalViewSets(viewsets.ModelViewSet):
-    queryset = Goal.objects.all()
-    serializer_class = GoalSerializer 
+    serializer_class = GoalSerializer
+    permission_classes = [IsOwner]
+
+    def get_queryset(self):
+        return Goal.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class ReportViewSets(viewsets.ModelViewSet):
-    queryset = Report.objects.all()
     serializer_class = ReportSerializer
+    permission_classes = [IsOwner]
+
+    def get_queryset(self):
+        return Goal.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
     @action(detail=False, methods=['get'])
