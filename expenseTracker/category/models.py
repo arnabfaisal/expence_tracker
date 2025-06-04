@@ -26,14 +26,15 @@ class Category(models.Model):
     type = models.CharField(max_length=10, choices=CategoryType.choices)
     name = models.CharField(max_length=100, blank=True, null=True)
     is_custom = models.BooleanField(default=False)
+    description = models.CharField(max_length=150, blank=True, null=True)
 
-    predefined_category = models.ForeignKey(
-        PredefinedCategory,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name='predefined_category'
-    )
+    # predefined_category = models.ForeignKey(
+    #     PredefinedCategory,
+    #     on_delete=models.CASCADE,
+    #     null=True,
+    #     blank=True,
+    #     related_name='predefined_category'
+    # )
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

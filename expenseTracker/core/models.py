@@ -21,13 +21,8 @@ class UserBalance(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    @property
-    def balance(self):
-        return self.total_income - self.total_expense
-    
-
     def __str__(self):
-        return f"{self.user.email} -> {self.balance}"
+        return f"{self.user.email}"
 
 
 class Transaction(models.Model):
@@ -36,7 +31,6 @@ class Transaction(models.Model):
     category  = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_transaction' )
 
     date = models.DateField(default=timezone.now)
-
 
     amount = models.DecimalField(max_digits=12, blank=False, null=False, decimal_places=2)
     description = models.CharField(max_length=150, blank=True, null=True)
@@ -52,45 +46,22 @@ class Transaction(models.Model):
 class Goal(models.Model):
     user  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_goal' )
     
-    category  = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_goal' )
+    # category  = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category_goal' )
 
     target_amount = models.DecimalField(max_digits=12, blank=False, null=False, decimal_places=2)
+    remaining_amount = models.DecimalField(max_digits=12, blank=False, null=False, decimal_places=2, default=0)
     period = models.CharField(blank=False, null=False, choices=periodType.choices)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    goal_type = models.CharField(max_length=10, blank=False,null=False ,choices=expenseType.choices)
+    is_completed = models.BooleanField(default=False)
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField(default=timezone.now)
 
-    is_achieved = models.BooleanField(default=False)
-    achieved_at = models.DateTimeField(null=True, blank=True)
-
-    def check_and_update_achievement(self):
-
-        try:
-            user_balance = UserBalance.objects.get(user=self.user).balance
-            if user_balance >= self.target_amount and not self.is_achieved:
-                self.is_achieved = True
-                self.achieved_at = timezone.now()
-                self.save()
-                return True
-            return False
-        except UserBalance.DoesNotExist:
-            return False
-    
-    @property
-    def progress(self):
-
-        try:
-            if self.transaction_type == 'income':
-                current = UserBalance.objects.get(user=self.user).total_income
-            else:
-                current = UserBalance.objects.get(user=self.user).total_expense
-            return min(100, (current / self.target_amount) * 100)
-        except (UserBalance.DoesNotExist, ZeroDivisionError):
-            return 0
 
     def __str__(self):
-        return f"{self.user} set up a {self.target_amount} on a {self.period} basis"
-
-
+        return f"{self.user} ->  -> {self.target_amount} -> {self.period}"
+    
 
 class Report(models.Model):
     user  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reports' )
