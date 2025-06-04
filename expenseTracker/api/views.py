@@ -3,6 +3,7 @@ from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status 
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.exceptions import PermissionDenied
 
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from .permissions import IsOwner
@@ -16,16 +17,56 @@ from users.models import CustomUser
 from users.serializers import CustomUserSerializer,RegisterSerializer,LogoutSerializer
 
 from category.models import PredefinedCategory, Category
-from category  import  serializers
+from category.serializers  import  PredefinedCategorySerializer, CategorySerializer
 
-from core.models import UserBalance, Transaction, Goal, Report
-from core.serializers import UserBalanceSerializer, TransactionSerializer, GoalSerializer, ReportSerializer
+from core.models import UserBalance, Transaction, Goal, Report, GoalHistory
+from core.serializers import UserBalanceSerializer, TransactionSerializer, GoalSerializer, ReportSerializer, GoalHistorySerializer
 
+class PredefinedCategoryViewSets(viewsets.ModelViewSet):
+    queryset = PredefinedCategory.objects.all()
+    serializer_class = PredefinedCategorySerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            instance.delete()
+        else:
+            raise PermissionDenied("You do not have permission to delete this predefined category.") 
+        
+
+class CategoryViewSets(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            instance.delete()
+        else:
+            raise PermissionDenied("You do not have permission to delete this category.")
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
 
 class LogoutView(generics.GenericAPIView):
@@ -42,47 +83,83 @@ class LogoutView(generics.GenericAPIView):
 class CustomUserViewSets(viewsets.ModelViewSet):
     queryset = CustomUser.objects.prefetch_related('user_info')
     serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
-class PredefinedCategoryViewSets(viewsets.ModelViewSet):
-    queryset = PredefinedCategory.objects.all()
-    serializer_class = serializers.PredefinedCategorySerializer
 
-class CategoryViewSets(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = serializers.CategorySerializer
-
-class UserBalanceViewSets(viewsets.ModelViewSet):
+class UserBalanceViewSet(viewsets.ModelViewSet):
+    queryset = UserBalance.objects.all()
     serializer_class = UserBalanceSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return UserBalance.objects.filter(user=self.request.user)
+        return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            instance.delete()
+        else:
+            raise PermissionDenied("You do not have permission to delete this user balance.")
 
-@extend_schema(tags=["Transactions"])
-class TransactionViewSets(viewsets.ModelViewSet):
+
+class TransactionViewSet(viewsets.ModelViewSet):
+    queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user)
+        return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-class GoalViewSets(viewsets.ModelViewSet):
+    
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            instance.delete()
+        else:
+            raise PermissionDenied("You do not have permission to delete this transaction.")
+        
+class GoalViewSet(viewsets.ModelViewSet):
+    queryset = Goal.objects.all()
     serializer_class = GoalSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user)
+        return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            instance.delete()
+        else:
+            raise PermissionDenied("You do not have permission to delete this goal.")
+        
+class GoalHistoryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = GoalHistory.objects.all()
+    serializer_class = GoalHistorySerializer
+    permission_classes = [IsAuthenticated, IsOwner]
 
-class ReportViewSets(viewsets.ModelViewSet):
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+    def perform_destroy(self, instance):
+        if instance.user == self.request.user:
+            instance.delete()
+        else:
+            raise PermissionDenied("You do not have permission to delete this goal history.")       
+        
+class ReportViewSet(viewsets.ModelViewSet):
+    queryset = Report.objects.all()
     serializer_class = ReportSerializer
-    def get_queryset(self):
-        return Goal.objects.filter(user=self.request.user)
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
