@@ -39,7 +39,7 @@ class GoalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Goal
-        fields = ['id', 'user', 'target_amount', 'remaining_amount', 'period', 'created_at', 'updated_at', 'goal_type', 'is_completed', 'start_date', 'end_date', 'is_goal_active', 'get_goal_percentage'] 
+        fields = ['id', 'user', 'target_amount', 'period', 'created_at', 'updated_at', 'goal_type', 'is_completed', 'start_date', 'end_date', 'is_goal_active', 'get_goal_percentage'] 
 
 
     def get_goal_percentage(self, obj):
