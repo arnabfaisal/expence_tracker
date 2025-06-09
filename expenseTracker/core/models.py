@@ -80,6 +80,7 @@ class Goal(models.Model):
 
             # Set remaining_amount initially same as target_amount
             self.remaining_amount = self.target_amount
+            self.is_completed = False
 
 
         super().save(*args, **kwargs)
