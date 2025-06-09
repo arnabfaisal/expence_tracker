@@ -123,7 +123,7 @@
     @apply bg-[#F5F7FA] text-foreground;
   }
   .logo {
-  @apply text-transparent bg-clip-text bg-gradient-to-r from-[#C084FC] to-[#64748B] text-4xl;
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-[#C084FC] to-[#64748B] text-4xl md:text-5xl;
 
   font-family: "Space Mono", monospace;
   font-weight: 400;
