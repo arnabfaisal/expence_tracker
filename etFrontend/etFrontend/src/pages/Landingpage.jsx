@@ -14,7 +14,7 @@ import {
 
 function Landingpage() {
   return (
-    <div className="container max-w-6xl mx-auto px-4 sm:px-6 mt-10">
+    <div className="container max-w-6xl mx-auto px-4 sm:px-6 mt-10 min-h-screen">
       <section className="hero flex flex-col md:flex-row items-center md:justify-between">
         <motion.div
           initial={{ opacity: 0, x: -50 }}

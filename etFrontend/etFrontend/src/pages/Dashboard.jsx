@@ -6,6 +6,8 @@ import { useTransactionStore } from "../../store/transitionStore";
 import { handler } from "../../store/helper";
 import LineChart from "../components/Linechart";
 
+import { useNavigate } from "react-router-dom";
+
 // Temporary mock data for the chart
 
 function Dashboard() {
@@ -32,6 +34,8 @@ function Dashboard() {
   const expenseChartData = result.expenseData;
   const totalChartData = result.totalData;
 
+  const navigate = useNavigate();
+
   return (
     <div className="container max-w-6xl mx-auto px-4">
       <section className="twobuttons  mt-5">
@@ -53,7 +57,7 @@ function Dashboard() {
             </div>
             <div className="flex gap-4 mt-5">
               <Button className="bg-asmani md:text-xl text-[10px]">Your Goals</Button>
-              <Button className="bg-asmani md:text-xl text-[8px]">Your Transactions</Button>
+              <Button className="bg-asmani md:text-xl text-[8px]" onClick={() => {navigate('/transactions')}}>Your Transactions</Button>
             </div>
           </div>
 
