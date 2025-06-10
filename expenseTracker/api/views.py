@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, views
 from rest_framework.response import Response
 from rest_framework import status 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -84,6 +84,28 @@ class CustomUserViewSets(viewsets.ModelViewSet):
     queryset = CustomUser.objects.prefetch_related('user_info')
     serializer_class = CustomUserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+
+
+class MeviewSet(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        user = request.user
+        serializer = CustomUserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserBalanceViewSet(viewsets.ModelViewSet):
