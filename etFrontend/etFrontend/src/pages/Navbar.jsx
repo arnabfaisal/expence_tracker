@@ -129,7 +129,7 @@ function Navbar() {
       <section className="">
         <nav className="flex justify-between items-center h-25 px-4 sm:px-6 ">
           <div>
-            <h1 className="logo">ARTHO</h1>
+            <h1 className="logo cursor-pointer" onClick={() => {navigate('/dashboard')}}>ARTHO</h1>
           </div>
           <div>
             {!isAuthenticated ? (
@@ -143,7 +143,7 @@ function Navbar() {
                       <DialogTitle className="text-center text-xl">
                         Login
                       </DialogTitle>
-                      <DialogDescription></DialogDescription>
+                      <DialogDescription className="text-center">Artho</DialogDescription>
                     </DialogHeader>
                     <form
                       onSubmit={handleSubmit}
