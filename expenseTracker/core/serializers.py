@@ -29,7 +29,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
-        read_only_fields = ['user', 'created_at', 'updated_at']
+        read_only_fields = ['user', 'created_at', 'updated_at','date']
 
 
 class GoalSerializer(serializers.ModelSerializer):
@@ -39,7 +39,8 @@ class GoalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Goal
-        fields = ['id', 'user', 'target_amount', 'period', 'created_at', 'updated_at', 'goal_type', 'is_completed', 'start_date', 'end_date', 'is_goal_active', 'get_goal_percentage'] 
+        fields = ['id', 'user','remaining_amount', 'target_amount', 'period', 'created_at', 'updated_at', 'goal_type', 'is_completed', 'start_date', 'end_date', 'is_goal_active', 'get_goal_percentage'] 
+        read_only_fields = ['user', 'created_at', 'updated_at','remaining_amount', 'is_completed','end_date', 'start_date']
 
 
     def get_goal_percentage(self, obj):
