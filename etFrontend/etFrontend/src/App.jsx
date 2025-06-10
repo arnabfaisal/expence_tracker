@@ -10,6 +10,10 @@ import Landingpage from "./pages/Landingpage";
 import Navbar from "./pages/Navbar";
 import Footer from "./pages/Footer";
 import Dashboard from "./pages/Dashboard";
+import Transaction from "./pages/Transaction";
+import Goal from "./pages/Goal";
+
+
 function App() {
   return (
     <div>
@@ -17,6 +21,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/transactions" element={<Transaction/>} />
+        <Route path="/goal" element = {<Goal/>} />
       </Routes>
       <Footer />
     </div>
