@@ -5,6 +5,9 @@ import { userBalanceStore } from "../../store/userBalanceStore";
 import { useTransactionStore } from "../../store/transitionStore";
 import { handler } from "../../store/helper";
 import LineChart from "../components/Linechart";
+import { useCategoryStore } from "../../store/categoryStore";
+
+import { toast } from "sonner";
 
 import { useNavigate } from "react-router-dom";
 
@@ -35,13 +38,24 @@ function Dashboard() {
     period: "",
     goal_type: "",
   });
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormDataTx((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    console.log(name, value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "category_id") {
+      const selectedCategory = categories.find(
+        (cat) => cat.id === Number(value)
+      );
+      setFormDataTx((prevData) => ({
+        ...prevData,
+        category_id: value,
+        description: selectedCategory?.description || "",
+      }));
+    } else {
+      setFormDataTx((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleChange2 = (event) => {
@@ -71,8 +85,13 @@ function Dashboard() {
         throw new Error("Registration failed");
       }
       setIsDialogOpen(false);
+      fetchbalances();
+      fetchtransactions();
+      toast.success(
+        "Transaction Created: Your transaction was successfully added."
+      );
     } catch (error) {
-      console.log("failed....");
+      toast.error("Transaction Failed: Your transaction was failed.");
     }
     setFormDataTx({
       category_id: 0,
@@ -97,11 +116,12 @@ function Dashboard() {
       });
 
       if (!res.ok) {
-        throw new Error("goal create failed");
+        toast.error("Goal creation failed.");
       }
       setIsDialogOpen2(false);
+      toast.success("Goal Created: Your Goal was successfully added.");
     } catch (error) {
-      console.log("failed....");
+      toast.error("Goal creation failed.");
     }
     setFormDatag({
       target_amount: "",
@@ -113,18 +133,20 @@ function Dashboard() {
   const { balances, fetchbalances } = userBalanceStore();
 
   const { transactions, fetchtransactions } = useTransactionStore();
+  const { categories, fetchCategories } = useCategoryStore();
   // console.log(transactions);
 
   useEffect(() => {
     fetchbalances();
     fetchtransactions();
+    fetchCategories();
 
-    const interval = setInterval(() => {
-      fetchbalances();
-      fetchtransactions();
-    }, 10000); // every 10 seconds
+    // const interval = setInterval(() => {
+    //   fetchbalances();
+    //   fetchtransactions();
+    // }, 10000); // every 10 seconds
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   const result = useMemo(() => handler(0, transactions), [transactions]);
@@ -180,24 +202,7 @@ function Dashboard() {
                       required
                     />
                   </div>
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="description"
-                      className="mb-1 font-medium myfamily text-gray-800"
-                    >
-                      description
-                    </label>
-                    <input
-                      id="description"
-                      type="text"
-                      placeholder="description"
-                      className="border text-gray-800 border-mycolor rounded-2xl px-3 py-2 focus:outline-none focus:ring-mycolor bg-gray-100"
-                      name="description"
-                      value={formDataTx.description}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+
                   <div className="flex flex-col">
                     <label
                       htmlFor="transaction_type"
@@ -218,22 +223,49 @@ function Dashboard() {
                       <option value="expense">Expense</option>
                     </select>
                   </div>
-
                   <div className="flex flex-col">
                     <label
-                      htmlFor="category"
+                      htmlFor="category_id"
+                      className="mb-1 font-medium myfamily text-gray-800"
+                    >
+                      Category
+                    </label>
+                    <select
+                      id="category_id"
+                      name="category_id"
+                      value={formDataTx.category_id}
+                      onChange={handleChange}
+                      className="border text-gray-800 border-mycolor rounded-2xl px-3 py-2 focus:outline-none focus:ring-mycolor bg-gray-100"
+                      required
+                    >
+                      <option value="">Select category</option>
+                      {categories
+                        .filter(
+                          (cat) => cat.type === formDataTx.transaction_type
+                        )
+                        .map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="description"
                       className="mb-1 font-medium myfamily text-gray-800"
                     >
                       Category
                     </label>
                     <input
-                      id="category_id"
-                      type="number"
-                      placeholder="category_id"
+                      id="description"
+                      type="text"
+                      placeholder="enter description"
                       className="border text-gray-800 border-mycolor rounded-2xl px-3 py-2 focus:outline-none focus:ring-mycolor bg-gray-100"
-                      name="category_id"
-                      value={formDataTx.category_id}
+                      name="description"
+                      value={formDataTx.description}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div>
@@ -371,17 +403,17 @@ function Dashboard() {
           </div>
 
           <div className="flex flex-col w-full px-6 mt-6">
-            <div className="bg-maati mt-5 mb-5 h-15 rounded-2xl flex flex-col items-center justify-center">
+            <div className="bg-maati mt-5 mb-5 h-15 shadow shadow-mycolor rounded-2xl flex flex-col items-center justify-center">
               <h1 className="font-myfamily text-xl">
                 Total Balance: {balances[0]?.get_total_balance}${" "}
               </h1>
             </div>
-            <div className="bg-shobuj mb-5 h-15 rounded-2xl flex flex-col items-center justify-center">
+            <div className="bg-shobuj mb-5 h-15 shadow shadow-mycolor rounded-2xl flex flex-col items-center justify-center">
               <h1 className="font-myfamily text-xl">
                 Total Income: {balances[0]?.total_income}${" "}
               </h1>
             </div>
-            <div className="bg-laal h-15 rounded-2xl flex flex-col items-center justify-center">
+            <div className="bg-laal h-15 rounded-2xl shadow shadow-mycolor flex flex-col items-center justify-center">
               <h1 className="font-myfamily text-xl">
                 Total Expense: {balances[0]?.total_expense}${" "}
               </h1>

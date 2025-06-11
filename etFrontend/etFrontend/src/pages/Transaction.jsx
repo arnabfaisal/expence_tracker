@@ -1,4 +1,4 @@
-import React, { useEffect , useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,13 +9,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-
-
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
+import { toast } from "sonner";
 import { useTransactionStore } from "../../store/transitionStore";
 import { Skeleton } from "@/components/ui/skeleton";
+
+import { useCategoryStore } from "../../store/categoryStore";
 
 import TransactionCard from "../components/ui/TransactionCard";
 
@@ -28,13 +27,24 @@ function Transaction() {
     description: "",
     transaction_type: "",
   });
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormDataTx((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    console.log(name, value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "category_id") {
+      const selectedCategory = categories.find(
+        (cat) => cat.id === Number(value)
+      );
+      setFormDataTx((prevData) => ({
+        ...prevData,
+        category_id: value,
+        description: selectedCategory?.description || "",
+      }));
+    } else {
+      setFormDataTx((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmitTransaction = async (event) => {
@@ -55,8 +65,12 @@ function Transaction() {
         throw new Error("Registration failed");
       }
       setIsDialogOpen(false);
+      fetchtransactions();
+      toast.success(
+        "Transaction Created: Your transaction was successfully added."
+      );
     } catch (error) {
-      console.log("failed....");
+      toast.error("Transaction Failed: Your transaction was failed.");
     }
     setFormDataTx({
       category_id: 0,
@@ -69,6 +83,8 @@ function Transaction() {
   const { loading, transactions, fetchtransactions } = useTransactionStore();
   console.log(transactions);
 
+  const { categories, fetchCategories } = useCategoryStore();
+
   const incomeTransactions = transactions.filter(
     (transaction) => transaction.transaction_type === "income"
   );
@@ -78,12 +94,13 @@ function Transaction() {
 
   useEffect(() => {
     fetchtransactions();
+    fetchCategories();
 
-    const interval = setInterval(() => {
-      fetchtransactions();
-    }, 1000000); // every 10 seconds
+    // const interval = setInterval(() => {
+    //   fetchtransactions();
+    // }, 1000000); // every 10 seconds
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   return (
@@ -130,24 +147,7 @@ function Transaction() {
                     required
                   />
                 </div>
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="description"
-                    className="mb-1 font-medium myfamily text-gray-800"
-                  >
-                    description
-                  </label>
-                  <input
-                    id="description"
-                    type="text"
-                    placeholder="description"
-                    className="border text-gray-800 border-mycolor rounded-2xl px-3 py-2 focus:outline-none focus:ring-mycolor bg-gray-100"
-                    name="description"
-                    value={formDataTx.description}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+
                 <div className="flex flex-col">
                   <label
                     htmlFor="transaction_type"
@@ -168,22 +168,47 @@ function Transaction() {
                     <option value="expense">Expense</option>
                   </select>
                 </div>
-
                 <div className="flex flex-col">
                   <label
-                    htmlFor="category"
+                    htmlFor="category_id"
+                    className="mb-1 font-medium myfamily text-gray-800"
+                  >
+                    Category
+                  </label>
+                  <select
+                    id="category_id"
+                    name="category_id"
+                    value={formDataTx.category_id}
+                    onChange={handleChange}
+                    className="border text-gray-800 border-mycolor rounded-2xl px-3 py-2 focus:outline-none focus:ring-mycolor bg-gray-100"
+                    required
+                  >
+                    <option value="">Select category</option>
+                    {categories
+                      .filter((cat) => cat.type === formDataTx.transaction_type)
+                      .map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="description"
                     className="mb-1 font-medium myfamily text-gray-800"
                   >
                     Category
                   </label>
                   <input
-                    id="category_id"
-                    type="number"
-                    placeholder="category_id"
+                    id="description"
+                    type="text"
+                    placeholder="enter description"
                     className="border text-gray-800 border-mycolor rounded-2xl px-3 py-2 focus:outline-none focus:ring-mycolor bg-gray-100"
-                    name="category_id"
-                    value={formDataTx.category_id}
+                    name="description"
+                    value={formDataTx.description}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div>

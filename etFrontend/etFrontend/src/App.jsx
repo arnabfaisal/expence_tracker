@@ -3,7 +3,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-
+import { Toaster } from 'sonner';
 import { Button } from "@/components/ui/button";
 
 import Landingpage from "./pages/Landingpage";
@@ -17,6 +17,7 @@ import Goal from "./pages/Goal";
 function App() {
   return (
     <div>
+      <Toaster position="top-right" richColors />
       <Navbar />
       <Routes>
         <Route path="/" element={<Landingpage />} />

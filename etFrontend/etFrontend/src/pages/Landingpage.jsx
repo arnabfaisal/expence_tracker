@@ -2,7 +2,7 @@ import React ,{useState , useEffect} from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
@@ -47,8 +47,9 @@ function Landingpage() {
       const data = await res.json();
       console.log("User profile data:", data); // ✅ move this above setEmail
       setEmail(data.email);
+      toast.success("Registration Successful");
     } catch (err) {
-      console.error("User fetch error:", err);
+      toast.error("Registration Failed");
       setIsAuthenticated(false);
       setEmail(null);
     }
