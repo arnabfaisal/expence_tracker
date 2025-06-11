@@ -62,10 +62,14 @@ class Goal(models.Model):
     goal_type = models.CharField(max_length=10, blank=False,null=False ,choices=expenseType.choices)
     is_completed = models.BooleanField(default=False)
     start_date = models.DateField(auto_now_add=True, blank=False, null=False)
-    end_date = models.DateField(auto_now_add=True, blank=False, null=False)
+    end_date = models.DateField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         # Only set initial values on creation
+
+
+        if not self.start_date:
+            self.start_date = timezone.now().date()
         if not self.pk:
             # Set end_date based on period
             if self.period == 'monthly':
@@ -77,6 +81,8 @@ class Goal(models.Model):
                 self.end_date = self.start_date + timedelta(days=6)
             elif self.period == 'yearly':
                 self.end_date = self.start_date.replace(year=self.start_date.year + 1)
+            elif self.period == 'daily':
+                self.end_date = self.start_date  # same day
 
             # Set remaining_amount initially same as target_amount
             self.remaining_amount = self.target_amount
@@ -94,7 +100,17 @@ class Goal(models.Model):
     
     @property
     def is_goal_active(self):
-        return not self.is_completed and timezone.now().date() <= self.end_date 
+        if self.end_date is None:
+            return False
+        return not self.is_completed and timezone.now().date() <= self.end_date
+
+    
+    @property
+    def get_remaining_days(self):
+        today = timezone.now().date()
+        if self.end_date and today <= self.end_date:
+            return (self.end_date - today).days
+        return 0  # or maybe return -1 to indicate it's past due
 
 
     def __str__(self):

@@ -3,7 +3,7 @@ import React from "react";
 function GoalCard({goal}) {
   return (
     <div className="mt-5">
-      <div className="h-[220px] w-[350px] md:w-[600px] bg-white shadow-2xl shadow-[#A5B4FC] rounded-2xl">
+      <div className="h-[220px] w-[400px] md:w-[600px] bg-white shadow-2xl shadow-[#A5B4FC] rounded-2xl">
         <div className="flex justify-between gap-2 px-3 py-2 mb-4">
           <div>
             <h1 className="md:text-3xl font-myfamily myfontdesign">{goal.target_amount}$</h1>
@@ -13,7 +13,7 @@ function GoalCard({goal}) {
               <p className="font-myfamily">{goal.goal_type}</p>
             </div>
             <div className="bg-maati rounded-2xl flex flex-wrap justify-center items-center px-2">
-              <p>{goal.period}</p>
+              <p>{goal.period}({goal.get_remaining_days})</p>
             </div>
           </div>
         </div>
@@ -35,9 +35,10 @@ function GoalCard({goal}) {
             </div>
           </div>
           <div>
-            <div className="px-3">
-              <p className="mt-3">Remaining: {goal.remaining_amount}</p>
-              <p className="mt-3">Start: {goal.start_date}</p>
+            <div className="px-2">
+              <p className="mt-2">Remaining: {goal.remaining_amount}$</p>
+              <p className="mt-2">Start : {goal.start_date}</p>
+              <p className="mt-2">End : {goal.end_date}</p>
             </div>
           </div>
         </div>

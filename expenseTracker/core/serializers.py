@@ -36,10 +36,11 @@ class GoalSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     is_goal_active = serializers.SerializerMethodField()
     get_goal_percentage = serializers.SerializerMethodField()
+    get_remaining_days = serializers.SerializerMethodField()
 
     class Meta:
         model = Goal
-        fields = ['id', 'user','remaining_amount', 'target_amount', 'period', 'created_at', 'updated_at', 'goal_type', 'is_completed', 'start_date', 'end_date', 'is_goal_active', 'get_goal_percentage'] 
+        fields = ['id', 'user','remaining_amount', 'target_amount', 'period', 'created_at', 'updated_at', 'goal_type', 'is_completed', 'start_date', 'end_date', 'is_goal_active', 'get_goal_percentage', 'get_remaining_days'] 
         read_only_fields = ['user', 'created_at', 'updated_at','remaining_amount', 'is_completed','end_date', 'start_date']
 
 
@@ -48,6 +49,9 @@ class GoalSerializer(serializers.ModelSerializer):
     
     def is_goal_active(self, obj):
         return obj.is_goal_active
+    
+    def get_remaining_days(self, obj):
+        return obj.get_remaining_days()
 
 class GoalHistorySerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)

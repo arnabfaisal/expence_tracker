@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { toast } from "sonner";
 import GoalCard from "../components/ui/GoalCard";
 import { useGoalStore } from "../../store/useGoalStore";
 import GoalHistoryCard from "../components/ui/GoalHistoryCard";
@@ -51,11 +51,13 @@ function Goal() {
       });
 
       if (!res.ok) {
-        throw new Error("goal create failed");
+        toast.error("Goal creation failed.");
       }
       setIsDialogOpen2(false);
+      fetchGoals();
+      toast.success("Goal Created: Your Goal was successfully added.");
     } catch (error) {
-      console.log("failed....");
+        toast.error("Goal creation failed.");
     }
     setFormDatag({
       target_amount: "",

@@ -19,5 +19,7 @@ urlpatterns = [
     path("register/", views.RegisterView.as_view(), name='register'),
     path("logout/", views.LogoutView.as_view(), name='logout'),
     path("me/", views.MeviewSet.as_view(), name='me'),
+    path("global/", views.GlobalCategoryListView.as_view(), name='global'),
+
 ]
 
