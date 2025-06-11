@@ -42,6 +42,11 @@ class PredefinedCategoryViewSets(viewsets.ModelViewSet):
         else:
             raise PermissionDenied("You do not have permission to delete this predefined category.") 
         
+class GlobalCategoryListView(generics.ListAPIView):
+    queryset = Category.objects.filter(is_custom=False, is_active=True)
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
+
 
 class CategoryViewSets(viewsets.ModelViewSet):
     queryset = Category.objects.all()
