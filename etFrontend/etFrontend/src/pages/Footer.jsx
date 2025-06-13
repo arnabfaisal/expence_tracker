@@ -2,10 +2,10 @@ import React from 'react'
 
 function Footer() {
   return (
-    <div className='container max-w-6xl mx-auto px-4'>
+    <div className=''>
       
 
-<footer className="bg-gray-900 rounded-lg shadow-sm dark:bg-gray-900 mt-5">
+<footer className="bg-gray-900 shadow-sm dark:bg-gray-900 mt-5">
     <div className="container max-w-5xl mx-auto px-4 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
             <a href="https://flowbite.com/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
@@ -19,10 +19,10 @@ function Footer() {
                     <a href="#" className="hover:underline me-4 md:me-6">Privacy Policy</a>
                 </li>
                 <li>
-                    <a href="#" className="hover:underline me-4 md:me-6">Licensing</a>
+                    <a href="#" className="hover:underline me-4 md:me-6">Contact</a>
                 </li>
                 <li>
-                    <a href="#" className="hover:underline">Contact</a>
+                    <a href="#" className="hover:underline">Report</a>
                 </li>
             </ul>
         </div>
