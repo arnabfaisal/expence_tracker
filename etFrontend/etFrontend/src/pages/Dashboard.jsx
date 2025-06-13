@@ -404,17 +404,17 @@ function Dashboard() {
 
           <div className="flex flex-col w-full px-6 mt-6">
             <div className="bg-maati mt-5 mb-5 h-15 shadow shadow-mycolor rounded-2xl flex flex-col items-center justify-center">
-              <h1 className="font-myfamily text-xl">
+              <h1 className="font-myfamily text-2xl">
                 Total Balance: {balances[0]?.get_total_balance}${" "}
               </h1>
             </div>
             <div className="bg-shobuj mb-5 h-15 shadow shadow-mycolor rounded-2xl flex flex-col items-center justify-center">
-              <h1 className="font-myfamily text-xl">
+              <h1 className="font-myfamily text-2xl">
                 Total Income: {balances[0]?.total_income}${" "}
               </h1>
             </div>
             <div className="bg-laal h-15 rounded-2xl shadow shadow-mycolor flex flex-col items-center justify-center">
-              <h1 className="font-myfamily text-xl">
+              <h1 className="font-myfamily text-2xl">
                 Total Expense: {balances[0]?.total_expense}${" "}
               </h1>
             </div>
